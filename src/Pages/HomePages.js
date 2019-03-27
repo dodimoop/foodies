@@ -40,25 +40,26 @@ class HomePages extends Component {
     this.state.cities.map(data => {
       let city = {
         key: data.country_id,
-        text: data.country_name,
-        value: data.country_name,
+        text: data.name,
+        value: data.name,
         image: { avatar: true, src: data.country_flag_url }
       }
-      citiesOption.push(city)
+      return citiesOption.push(city)
     })
-    console.log(citiesOption)
-
+    // console.log(citiesOption)
+    // console.log(this.state.cities)
     return (
       <div className={classes.HomePages}>
         <Image className={classes.Images} src='https://images.immediate.co.uk/volatile/sites/2/2017/07/Coppa-Club-PWF-0132-HDR.jpg?quality=45&resize=960,413' fluid />
-        <Dropdown 
-          className={classes.Dropdown} 
-          placeholder='Jakarta' 
-          search 
-          selection 
-          onInput={this.isOnInput}
-          options={citiesOption} 
-        />
+        <Dropdown
+            className={classes.Dropdown}
+            placeholder='Jakarta'
+            search
+            selection
+            selected
+            onInput={this.isOnInput}
+            options={citiesOption}
+          />
       </div>
     )
   }
