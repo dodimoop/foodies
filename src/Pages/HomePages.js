@@ -1,37 +1,64 @@
 import React, { Component } from 'react'
-import _ from 'lodash'
 import { Image, Dropdown } from 'semantic-ui-react'
-import classes from './HomePages.module.scss';
+import classes from './HomePages.module.scss'
 import API from '../Services/services'
 
 class HomePages extends Component {
 
   state = {
     cities: [],
+    textCurrent: '',
     page: 0
   }
 
   async componentDidMount() {
-    await this.isFetchCities()
+    await this.isOnInput()
   }
 
-  isFetchCities = async () => {
+  isOnInput = async (event) => {
     try {
+      let textCurrent = event.target.value
+      let response = await API.get('/v2.1/cities', {
+        params: {
+          q: textCurrent
+        }
+      })
+
+      if(response) {
+        await this.setState({cities: response.data.location_suggestions})
+      }
+
+      // console.log(this.state.cities);
       
-      let response = await API.get('/v2.1/cities')
-      console.log(response);
-
-
     } catch (error) {
-      console.log(error);
+      console.log(error)
     }
   }
 
   render() {
+    let citiesOption = []
+    this.state.cities.map(data => {
+      let city = {
+        key: data.country_id,
+        text: data.country_name,
+        value: data.country_name,
+        image: { avatar: true, src: data.country_flag_url }
+      }
+      citiesOption.push(city)
+    })
+    console.log(citiesOption)
+
     return (
       <div className={classes.HomePages}>
         <Image className={classes.Images} src='https://images.immediate.co.uk/volatile/sites/2/2017/07/Coppa-Club-PWF-0132-HDR.jpg?quality=45&resize=960,413' fluid />
-        <Dropdown className={classes.Dropdown} placeholder='State' search selection options={this.cities} />
+        <Dropdown 
+          className={classes.Dropdown} 
+          placeholder='Jakarta' 
+          search 
+          selection 
+          onInput={this.isOnInput}
+          options={citiesOption} 
+        />
       </div>
     )
   }
