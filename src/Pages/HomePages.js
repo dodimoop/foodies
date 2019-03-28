@@ -8,7 +8,8 @@ class HomePages extends Component {
   state = {
     cities: [],
     textCurrent: '',
-    page: 0
+    page: 0,
+    selectedCity: {}
   }
 
   async componentDidMount() {
@@ -28,35 +29,56 @@ class HomePages extends Component {
         await this.setState({cities: response.data.location_suggestions})
       }
 
-      // console.log(this.state.cities);
-      
     } catch (error) {
       console.log(error)
     }
   }
 
+  onChangeHandler = (event, data) => {
+    const selectedCity = this.state.cities.filter((city) => {
+      if (city.id === data.value) {
+        return true
+      }
+
+      return false
+    })
+
+    if (selectedCity.length > 0) {
+      this.setState({selectedCity: this.parseCity(selectedCity[0], null)})
+    }
+  }
+
+  parseCity = (data, index) => {
+    const cityData = {
+      country_id: data.country_id,
+      text: data.name,
+      value: data.id,
+      image: { avatar: true, src: data.country_flag_url }
+    }
+
+    if (index) {
+      return {...cityData, index}
+    }
+
+    return cityData
+  }
+
   render() {
     let citiesOption = []
-    this.state.cities.map(data => {
-      let city = {
-        key: data.country_id,
-        text: data.name,
-        value: data.name,
-        image: { avatar: true, src: data.country_flag_url }
-      }
+    this.state.cities.map((data, index) => {
+      let city = this.parseCity(data, index)
       return citiesOption.push(city)
     })
-    // console.log(citiesOption)
-    // console.log(this.state.cities)
+
     return (
       <div className={classes.HomePages}>
         <Image className={classes.Images} src='https://images.immediate.co.uk/volatile/sites/2/2017/07/Coppa-Club-PWF-0132-HDR.jpg?quality=45&resize=960,413' fluid />
         <Dropdown
             className={classes.Dropdown}
-            placeholder='Jakarta'
+            placeholder='Select City'
             search
             selection
-            selected
+            onChange={this.onChangeHandler}
             onInput={this.isOnInput}
             options={citiesOption}
           />
