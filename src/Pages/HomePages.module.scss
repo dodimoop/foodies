@@ -8,10 +8,28 @@
   }
 
   .Dropdown {
-    margin: inherit;
-    left: 50% !important;
-    right: auto !important;
-    text-align: center !important;
-    transform: translate(-50%, 0) !important;
+    border-radius: 20px !important;
+    min-width: 20em !important;
+  }
+
+  .Search {
+    input {
+      min-width: 20em !important;
+    }
+  }
+
+  .gridColumnCities {
+    text-align: -webkit-center;
+  }
+
+  .gridColumnRestaurant {
+    text-align: -webkit-left;
+  }
+
+  .Grid {
+    z-index: 1;
+    position: absolute;
+    left: 365px;
+    top: 340px;
   }
 }
