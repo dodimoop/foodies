@@ -7,14 +7,17 @@ class HomePages extends Component {
 
   state = {
     cities: [],
-    textCurrent: '',
     page: 0,
     selectedCity: {},
-    isLoading: false
+    isLoading: false,
+    foodies: [],
+    selectedFood: {},
+    textCurrentFood: ''
   }
 
   async componentDidMount() {
     await this.isOnInput()
+    await this.resetComponent()
   }
 
   isOnInput = async (event) => {
@@ -26,7 +29,7 @@ class HomePages extends Component {
         }
       })
 
-      if(response) {
+      if (response) {
         await this.setState({cities: response.data.location_suggestions})
       }
 
@@ -36,6 +39,12 @@ class HomePages extends Component {
   }
 
   onChangeHandler = (event, data) => {
+    this.setState({
+      foodies: [], 
+      isLoading: false, 
+      textCurrentFood: ''
+    })
+
     const selectedCity = this.state.cities.filter((city) => {
       if (city.id === data.value) {
         return true
@@ -64,15 +73,50 @@ class HomePages extends Component {
     return cityData
   }
 
+  resetComponent = async () => {
+    await this.setState({ isLoading: false, foodies: [], textCurrentFood: '' })
+  }
+
+  onSearchFood = async (event) => {
+    try {
+      this.setState({foodies: [], isLoading: true})
+      let entityId
+      if (this.state.cities.length > 0) {
+        entityId = this.state.selectedCity.value
+      }
+      let textCurrentFood = event.target.value
+      this.setState({textCurrentFood: textCurrentFood})
+      let textCurrents = this.state.textCurrentFood
+
+      if (textCurrentFood.length < 1) {
+        this.resetComponent()
+      }
+      
+      let response = await API.get('v2.1/search', {
+        params: {
+          entity_id: entityId,
+          entity_type: "city",
+          q: textCurrents,
+          count: 6
+        }
+      })
+
+      if (response) {
+        await this.setState({foodies: response.data.restaurants, isLoading: false})
+      }
+      
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   render() {
     let citiesOption = []
     this.state.cities.map((data, index) => {
       let city = this.parseCity(data, index)
       return citiesOption.push(city)
     })
-    if (this.state.cities.length > 0) {
-      console.log(this.state.cities[0].id);
-    }
+    
     let dropdown
     if (this.state.cities) {
       dropdown = (
@@ -87,7 +131,7 @@ class HomePages extends Component {
         />
       )
     }
-    
+
     return (
       <div className={classes.HomePages}>
         <Image 
@@ -101,15 +145,16 @@ class HomePages extends Component {
               {dropdown}
             </Grid.Column>
             <Grid.Column className={classes.gridColumnRestaurant} width={8}>
-              <Search
-                className={classes.Search}
-                loading={this.isLoading}
-                onResultSelect={this.handleResultSelect}
-                // onSearchChange={}
-                results={this.results}
-                value={this.value}
-                {...this.props}
-              />
+            <Search
+              input={{ icon: 'search', iconPosition: 'left' }}
+              className={classes.Search}
+              loading={this.state.isLoading}
+              // onResultSelect={this.handleResultSelect}
+              onSearchChange={this.onSearchFood}
+              // results={this.state.foodies}
+              value={this.state.textCurrentFood}
+              {...this.props}
+            />
             </Grid.Column>
           </Grid>
         </div>
