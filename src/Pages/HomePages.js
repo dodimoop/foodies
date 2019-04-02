@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Image, Dropdown, Grid, Search } from 'semantic-ui-react'
+import { Image, Dropdown, Grid, Search, Button, Icon, Input } from 'semantic-ui-react'
 import classes from './HomePages.module.scss'
 import API from '../Services/services'
 
@@ -7,9 +7,8 @@ class HomePages extends Component {
 
   state = {
     cities: [],
-    page: 0,
     selectedCity: {},
-    isLoading: false,
+    page: 0,
     foodies: [],
     selectedFood: {},
     textCurrentFood: ''
@@ -41,7 +40,6 @@ class HomePages extends Component {
   onChangeHandler = (event, data) => {
     this.setState({
       foodies: [], 
-      isLoading: false, 
       textCurrentFood: ''
     })
 
@@ -74,23 +72,21 @@ class HomePages extends Component {
   }
 
   resetComponent = async () => {
-    await this.setState({ isLoading: false, foodies: [], textCurrentFood: '' })
+    await this.setState({ foodies: [], textCurrentFood: '' })
   }
 
   onSearchFood = async (event) => {
     try {
-      this.setState({foodies: [], isLoading: true})
+      this.setState({foodies: []})
       let entityId
       if (this.state.cities.length > 0) {
         entityId = this.state.selectedCity.value
       }
-      let textCurrentFood = event.target.value
-      this.setState({textCurrentFood: textCurrentFood})
       let textCurrents = this.state.textCurrentFood
 
-      if (textCurrentFood.length < 1) {
-        this.resetComponent()
-      }
+      // if (this.state.textCurrentFood.length < 1) {
+      //   this.resetComponent()
+      // }
       
       let response = await API.get('v2.1/search', {
         params: {
@@ -102,7 +98,7 @@ class HomePages extends Component {
       })
 
       if (response) {
-        await this.setState({foodies: response.data.restaurants, isLoading: false})
+        await this.setState({foodies: response.data.restaurants, })
       }
       
     } catch (error) {
@@ -110,7 +106,34 @@ class HomePages extends Component {
     }
   }
 
+  parseFood = (data, index) => {
+    const foodData = {
+      key: data.restaurant.id,
+      id: data.restaurant.id,
+      title: data.restaurant.name,
+      price: data.restaurant.currency + ' ' + data.restaurant.average_cost_for_two,
+      image: data.restaurant.thumb,
+      description: data.restaurant.location.locality_verbose
+    }
+
+    if (index) {
+      return {...foodData, index}
+    }
+
+    return foodData
+  }
+
+  onInputHanlder = async (event) => {
+    let queryText = event.target.value
+    await this.setState({textCurrentFood: queryText})
+
+    if (this.state.textCurrentFood.length < 1) {
+      this.resetComponent()
+    }
+  }
+
   render() {
+    console.log(this.state.foodies);
     let citiesOption = []
     this.state.cities.map((data, index) => {
       let city = this.parseCity(data, index)
@@ -132,8 +155,17 @@ class HomePages extends Component {
       )
     }
 
+    let foodiesOption = []
+    this.state.foodies.map((data, index) => {
+      let food = this.parseFood(data, index)
+      return foodiesOption.push(food)
+    })
+
     return (
       <div className={classes.HomePages}>
+        <div className={classes.textFoodies}>
+          <h1 className={classes.fontSize}>Food Finder</h1>
+        </div>
         <Image 
           className={classes.Images} 
           src='https://images.immediate.co.uk/volatile/sites/2/2017/07/Coppa-Club-PWF-0132-HDR.jpg?quality=45&resize=960,413' 
@@ -141,20 +173,29 @@ class HomePages extends Component {
         />
         <div className={classes.Grid}>
           <Grid>
-            <Grid.Column className={classes.gridColumnCities} width={8}>
+            <Grid.Column className={classes.gridColumnCities} width={6}>
               {dropdown}
             </Grid.Column>
-            <Grid.Column className={classes.gridColumnRestaurant} width={8}>
-            <Search
-              input={{ icon: 'search', iconPosition: 'left' }}
-              className={classes.Search}
-              loading={this.state.isLoading}
-              // onResultSelect={this.handleResultSelect}
-              onSearchChange={this.onSearchFood}
-              // results={this.state.foodies}
-              value={this.state.textCurrentFood}
-              {...this.props}
-            />
+            <Grid.Column className={classes.gridColumnRestaurant} width={6}>
+              <Input 
+                className={classes.Search} 
+                placeholder='Search restaurants or food'
+                onInput={this.onInputHanlder} 
+              >
+                <input />
+              </Input>
+            </Grid.Column>
+            <Grid.Column className={classes.gridColumnSearch} width={4}>
+              <Button 
+                className={classes.buttonSearch} 
+                icon 
+                labelPosition='right'
+                color='green'
+                onClick={this.onSearchFood}
+              >
+                Search
+                <Icon name='search' />
+              </Button>
             </Grid.Column>
           </Grid>
         </div>
