@@ -1,10 +1,8 @@
 .HomePages {
-  margin: -15px;
 
   .Images {
-    object-fit: fill;
-    width: 100%;
     max-height: 300px;
+    top: -51px;
   }
 
   .Dropdown {
@@ -15,21 +13,46 @@
   .Search {
     input {
       min-width: 20em !important;
+      border-radius: 20px;
     }
   }
 
+  .buttonSearch {
+    height: 38px;
+    border-radius: 20px !important;
+    min-width: 12em !important;
+  }
+
   .gridColumnCities {
+    padding-right: 0rem !important;
     text-align: -webkit-center;
+    
   }
 
   .gridColumnRestaurant {
     text-align: -webkit-left;
   }
 
+  .gridColumnSearch {
+    text-align: -webkit-left;
+  }
+
   .Grid {
     z-index: 1;
     position: absolute;
-    left: 365px;
-    top: 340px;
+    left: 285px;
+    top: 281px;
+  }
+
+  .textFoodies {
+    z-index: 1;
+    position: relative;
+    left: 560px;
+    top: 155px;
+  }
+
+  .fontSize {
+    font-size: 40px;
+    color: darkorange;
   }
 }
