@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Image, Dropdown, Grid, Search, Button, Icon, Input } from 'semantic-ui-react'
+import { Image, Dropdown, Grid, Button, Icon, Input } from 'semantic-ui-react'
 import classes from './HomePages.module.scss'
 import API from '../Services/services'
 
@@ -84,10 +84,6 @@ class HomePages extends Component {
       }
       let textCurrents = this.state.textCurrentFood
 
-      // if (this.state.textCurrentFood.length < 1) {
-      //   this.resetComponent()
-      // }
-      
       let response = await API.get('v2.1/search', {
         params: {
           entity_id: entityId,
