@@ -1,5 +1,5 @@
 import React from 'react'
-import { Header, Segment, Image } from 'semantic-ui-react'
+import { Header, Segment } from 'semantic-ui-react'
 import classes from './HeaderLayouts.module.scss';
 
 const HeaderLayouts = () => (
