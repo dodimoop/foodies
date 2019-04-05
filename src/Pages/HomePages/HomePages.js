@@ -140,7 +140,7 @@ class HomePages extends Component {
         </div>
         <Image 
           className={classes.Images} 
-          src='https://images.immediate.co.uk/volatile/sites/2/2017/07/Coppa-Club-PWF-0132-HDR.jpg?quality=45&resize=960,413' 
+          src='https://images.immediate.co.uk/volatile/sites/2/2017/07/Coppa-Club-PWF-0132-HDR.jpg?quality=45&resize=1500,413' 
           fluid 
         />
         <div className={classes.Grid}>
