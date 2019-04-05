@@ -9,10 +9,24 @@
   }
 
   .Image {
+    height: 150px;
     max-height: 150px;
   }
 
   .Content {
-    max-height: 150px;
+    height: 100px;
+    max-height: 100px;
+  }
+
+  .gridColumn {
+    margin: 0 auto;
+    margin-bottom: 30px !important;
+  }
+
+  .Label {
+    z-index: 1;
+    position: absolute;
+    left: 253px;
+    top: 0px;
   }
 }
