@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import queryString from 'query-string'
-import HeaderLayout from '../../Components/HeaderLayouts'
+import HeaderLayouts from '../../Components/HeaderLayouts'
 import API from '../../Services/services'
 import { Grid, Image, Card, Dimmer, Loader, Label, Button, Icon } from 'semantic-ui-react'
 import classes from './ResultPages.module.scss';
@@ -46,7 +46,7 @@ class ResultPages extends Component {
     const idRestaurant = data.restaurant.id
     window.localStorage.clear()
     window.localStorage.setItem('currentRestaurant', JSON.stringify(data))
-    this.props.history.push(`restaurant/${idRestaurant}`)
+    this.props.history.push(`detail-result/${idRestaurant}`)
   }
 
   isLoadmore = async () => {
@@ -75,7 +75,6 @@ class ResultPages extends Component {
     try {
       await this.setState({restaurants: []})
       this.props.history.push('/')
-      console.log(this.state.restaurants);
     } catch (error) {
       console.log(error);
     }
@@ -111,7 +110,7 @@ class ResultPages extends Component {
     }
     return (
       <div className={classes.ResultPages}>
-        <HeaderLayout />
+        <HeaderLayouts match={this.props.match}/>
         <Grid className={classes.Grid}>
           <Grid.Row>
             {dataRestaurants}
