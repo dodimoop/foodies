@@ -76,7 +76,7 @@ class HomePages extends Component {
   }
 
   onSearchFood = () => {
-    this.props.history.push(`/result?cityId=${this.state.selectedCity.value}&q=${this.state.textCurrentFood}`)
+    this.props.history.push(`/result?cityId=${this.state.selectedCity.value}&q=${this.state.textCurrentFood}&page=${this.state.page}`)
   }
 
   parseFood = (data, index) => {
