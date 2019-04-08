@@ -3,7 +3,6 @@ import queryString from 'query-string'
 import HeaderLayout from '../../Components/HeaderLayouts'
 import API from '../../Services/services'
 import { Grid, Image, Card, Dimmer, Loader, Label } from 'semantic-ui-react'
-import MappleTooltip from 'reactjs-mappletooltip'
 import classes from './ResultPages.module.scss';
 
 class ResultPages extends Component {
@@ -61,16 +60,11 @@ class ResultPages extends Component {
         this.state.restaurants.map((data, key) => (
           <Grid.Column className={classes.gridColumn} key={key} width={5}>
             <Card centered onClick={() => this.cardOnClick(data)} key={data.restaurant.id}  className={classes.Card}>
-              <MappleTooltip float={true} direction={'bottom'} mappleType={'warning'}>
-                <div>
-                  <Label.Group className={classes.Label}>
-                    <Label as='a' color="green">{data.restaurant.user_rating.aggregate_rating}</Label>
-                  </Label.Group>
-                </div>
-                <div>
-                  {data.restaurant.user_rating.rating_text}
-                </div>
-              </MappleTooltip>
+              <div>
+                <Label.Group className={classes.Label}>
+                  <Label className={classes.labelRating} color='green' data-tooltip={data.restaurant.user_rating.rating_text}>{data.restaurant.user_rating.aggregate_rating}</Label>
+                </Label.Group>
+              </div>
               <Image className={classes.Image} src={data.restaurant.thumb} />
               <Card.Content className={classes.Content}>
                 <Card.Header>{data.restaurant.name}</Card.Header>
