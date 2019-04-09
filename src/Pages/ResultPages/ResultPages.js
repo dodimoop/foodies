@@ -6,13 +6,14 @@ import { Grid, Image, Card, Dimmer, Loader, Label, Button, Icon } from 'semantic
 import classes from './ResultPages.module.scss';
 
 class ResultPages extends Component {
-
+  
   state = {
-    restaurants: [],
-    isLoading: false,
-    page: 0,
-    isLoadingLoadmore: false,
-    count: 6
+      restaurants: [],
+      isLoading: false,
+      isLoadingLoadmore: false,
+      page: 0,
+      count: 6,
+      start: 0  
   }
 
   async componentDidMount() {
@@ -22,7 +23,7 @@ class ResultPages extends Component {
   isFetchData = async () => {
     try {
       let dataQueryString = queryString.parse(this.props.location.search)
-      this.setState({restaurants: [], isLoading: true})
+      this.setState({restaurants: [], isLoading: true, isLoadingLoadmore: true})
         let response = await API.get('v2.1/search', {
           params: {
             entity_id: dataQueryString.cityId,
@@ -34,7 +35,7 @@ class ResultPages extends Component {
         })
 
         if (response) {
-          await this.setState({restaurants: response.data.restaurants, isLoading: false})
+          await this.setState({restaurants: response.data.restaurants, isLoading: false, isLoadingLoadmore: false})
         }
         
     } catch (error) {
@@ -51,21 +52,36 @@ class ResultPages extends Component {
 
   isLoadmore = async () => {
     try {
-      await this.setState({restaurants: [], isLoading: true, isLoadingLoadmore: true, count: this.state.count + 6})
+      await this.setState(prevState => {
+        return {
+          isLoadingLoadmore: true,
+          page: prevState.page + 1,
+          start: this.state.start + 6
+        }
+      })
+
       let dataQueryString = queryString.parse(this.props.location.search)
-      this.props.history.push(`/result?cityId=${dataQueryString.cityId}&q=${dataQueryString.q}&page=${this.state.page + 1}`)
+      this.props.history.push(`/result?cityId=${dataQueryString.cityId}&q=${dataQueryString.q}&page=${this.state.page}`)
       let response = await API.get('v2.1/search', {
         params: {
           entity_id: dataQueryString.cityId,
           entity_type: "city",
           q: dataQueryString.q,
           page: this.state.page,
-          count: this.state.count
+          count: this.state.count,
+          start: this.state.start
         }
       })
+      
       if (response) {
-        await this.setState({restaurants: response.data.restaurants, isLoading: false, isLoadingLoadmore: false})
+        await this.setState(prevState => {
+          return {
+            restaurants: prevState.restaurants.concat(response.data.restaurants),
+            isLoadingLoadmore: false
+          }
+        })
       }
+
     } catch (error) {
       console.log(error);
     }
@@ -82,7 +98,7 @@ class ResultPages extends Component {
 
   render() {
     let dataRestaurants
-    if (this.state.isLoading) {
+    if (this.state.isLoading || this.state.restaurants.length < 0) {
       dataRestaurants = (
         <Dimmer active inverted>
 					<Loader inverted content='Loading' />
@@ -117,7 +133,7 @@ class ResultPages extends Component {
           </Grid.Row>
         </Grid>
         <div className={classes.buttonLoadmore}>
-          <Button onClick={this.isLoadmore} loading={this.state.isLoadingLoadmore}>
+          <Button onClick={() => this.isLoadmore()} loading={this.state.isLoadingLoadmore}>
             Load More
           </Button>
         </div>
