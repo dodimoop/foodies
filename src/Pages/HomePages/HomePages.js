@@ -96,7 +96,7 @@ class HomePages extends Component {
     return foodData
   }
 
-  onInputHanlder = async (event) => {
+  onInputHandler = async (event) => {
     let queryText = event.target.value
     await this.setState({textCurrentFood: queryText})
 
@@ -152,7 +152,7 @@ class HomePages extends Component {
               <Input 
                 className={classes.Search} 
                 placeholder='Search restaurants or food'
-                onInput={this.onInputHanlder} 
+                onInput={this.onInputHandler} 
               >
                 <input />
               </Input>
