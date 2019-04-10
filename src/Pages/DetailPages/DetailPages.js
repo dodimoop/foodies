@@ -1,23 +1,48 @@
 import React, { Component } from 'react'
 import classes from './DetailsPages.module.scss'
 import HeaderLayouts from '../../Components/HeaderLayouts'
-import { Grid, Image} from 'semantic-ui-react'
+import { Grid, Image, Container } from 'semantic-ui-react'
 
 class DetailPages extends Component {
+
+  state = {
+    restaurantDetails: null
+  }
+
+  async componentDidMount() {
+    await this.getRestaurant()
+  }
+
+  getRestaurant = async () => {
+    let dataRestaurant = JSON.parse(localStorage.getItem('currentRestaurant'))
+    await this.setState({restaurantDetails: dataRestaurant})
+  }
+
   render() {
-    return (
-      <div className={classes.detailPages}>
-        <HeaderLayouts match={this.props.match}/>
-        <Grid columns={2}>
+    
+    let detailRestaurant
+    if (this.state.restaurantDetails) {
+      detailRestaurant = (
+        <Grid className={classes.Grid} columns={2}>
           <Grid.Row>
             <Grid.Column>
-              <Image src='https://react.semantic-ui.com/images/wireframe/paragraph.png' />
+              <Image className={classes.Image} src={this.state.restaurantDetails.restaurant.featured_image} size="large" />
             </Grid.Column>
             <Grid.Column>
-              <Image src='https://react.semantic-ui.com/images/wireframe/paragraph.png' />
+              <Container>
+                <h1>{this.state.restaurantDetails.restaurant.name}</h1>
+                <p><b>Address:</b> <br/>{this.state.restaurantDetails.restaurant.location.address}</p>
+              </Container>
             </Grid.Column>
           </Grid.Row>
         </Grid>
+      )
+    }
+
+    return (
+      <div className={classes.detailPages}>
+        <HeaderLayouts match={this.props.match}/>
+        {detailRestaurant}
       </div>
     )
   }
