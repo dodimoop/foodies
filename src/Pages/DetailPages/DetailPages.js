@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import classes from './DetailsPages.module.scss'
 import HeaderLayouts from '../../Components/HeaderLayouts'
-import { Grid, Image, Container } from 'semantic-ui-react'
+import { Grid, Image, Container, Button } from 'semantic-ui-react'
 
 class DetailPages extends Component {
 
@@ -18,13 +18,17 @@ class DetailPages extends Component {
     await this.setState({restaurantDetails: dataRestaurant})
   }
 
+  buttonBack = () => {
+    this.props.history.push('/')
+  }
+
   render() {
     
     let detailRestaurant
     if (this.state.restaurantDetails) {
       detailRestaurant = (
         <Grid className={classes.Grid} columns={2}>
-          <Grid.Row>
+          <Grid.Row className={classes.Row}>
             <Grid.Column>
               <Image className={classes.Image} src={this.state.restaurantDetails.restaurant.featured_image} size="large" />
             </Grid.Column>
@@ -35,6 +39,9 @@ class DetailPages extends Component {
               </Container>
             </Grid.Column>
           </Grid.Row>
+          <div className={classes.buttonBack}>
+            <Button onClick={this.buttonBack} content='Back to search restaurant' icon='left arrow' labelPosition='left' positive/>
+          </div>
         </Grid>
       )
     }
